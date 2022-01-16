@@ -41,9 +41,9 @@ impl<'a> HttpEce<'a> {
     /// characters, which is the largest that works with Google's and Mozilla's
     /// push servers.
     pub fn encrypt(&self, content: &'a [u8]) -> Result<WebPushPayload, WebPushError> {
-        if content.len() > 3052 {
-            return Err(WebPushError::PayloadTooLarge);
-        }
+        // if content.len() > 3052 {
+        //     return Err(WebPushError::PayloadTooLarge);
+        // }
 
         //Add more encoding standards to this match as they are created.
         match self.encoding {

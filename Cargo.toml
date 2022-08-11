@@ -28,7 +28,7 @@ serde_derive = "^1.0"
 jwt-simple = "^0.11.0"
 ece = "^2.1"
 pem = "^0.8.3"
-pkcs8 = { version = "^0.7.5", features = ["alloc"] }
+pkcs8 = { version = "^0.7.6", features = ["alloc", "pem"] }
 sec1_decode = "^0.1.0"
 base64 = "^0.13"
 chrono = "^0.4"

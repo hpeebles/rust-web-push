@@ -30,7 +30,7 @@ ece = "^2.1"
 pem = "^0.8.3"
 pkcs8 = { version = "^0.7.6", features = ["alloc", "pem"] }
 sec1_decode = "^0.1.0"
-base64 = "^0.13"
+base64 = "^0.21"
 chrono = "^0.4"
 log = "^0.4"
 

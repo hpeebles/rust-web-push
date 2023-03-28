@@ -1,3 +1,5 @@
+use base64::Engine;
+use base64::engine::general_purpose::URL_SAFE_NO_PAD;
 use ece::encrypt;
 
 use crate::error::WebPushError;
@@ -59,7 +61,7 @@ impl<'a> HttpEce<'a> {
                         format!(
                             "vapid t={}, k={}",
                             signature.auth_t,
-                            base64::encode_config(&signature.auth_k, base64::URL_SAFE_NO_PAD)
+                            URL_SAFE_NO_PAD.encode(&signature.auth_k)
                         ),
                     ));
                 }
@@ -79,7 +81,8 @@ impl<'a> HttpEce<'a> {
 
 #[cfg(test)]
 mod tests {
-    use base64::{self, URL_SAFE};
+    use base64::{self, Engine, URL_SAFE};
+    use base64::engine::general_purpose::URL_SAFE;
     use regex::Regex;
 
     use crate::error::WebPushError;
@@ -89,12 +92,11 @@ mod tests {
 
     #[test]
     fn test_payload_too_big() {
-        let p256dh = base64::decode_config(
+        let p256dh = URL_SAFE.decode(
             "BLMaF9ffKBiWQLCKvTHb6LO8Nb6dcUh6TItC455vu2kElga6PQvUmaFyCdykxY2nOSSL3yKgfbmFLRTUaGv4yV8",
-            URL_SAFE,
         )
         .unwrap();
-        let auth = base64::decode_config("xS03Fj5ErfTNH_l9WHE9Ig", URL_SAFE).unwrap();
+        let auth = URL_SAFE.decode("xS03Fj5ErfTNH_l9WHE9Ig", ).unwrap();
         let http_ece = HttpEce::new(ContentEncoding::Aes128Gcm, &p256dh, &auth, None);
         //This content is one above limit.
         let content = [0u8; 3801];

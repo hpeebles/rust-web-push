@@ -1,3 +1,4 @@
+use base64::Engine;
 use std::collections::BTreeMap;
 use std::io::Read;
 
@@ -166,13 +167,11 @@ impl<'a> VapidSignatureBuilder<'a> {
     /// ```
     pub fn from_base64(
         encoded: &str,
-        config: base64::Config,
+        config: base64::engine::GeneralPurpose,
         subscription_info: &'a SubscriptionInfo,
     ) -> Result<VapidSignatureBuilder<'a>, WebPushError> {
-        let pr_key = ES256KeyPair::from_bytes(
-            &base64::decode_config(encoded, config).map_err(|_| WebPushError::InvalidCryptoKeys)?,
-        )
-        .map_err(|_| WebPushError::InvalidCryptoKeys)?;
+        let pr_key = ES256KeyPair::from_bytes(&config.decode(encoded).map_err(|_| WebPushError::InvalidCryptoKeys)?)
+            .map_err(|_| WebPushError::InvalidCryptoKeys)?;
 
         Ok(Self::from_ec(pr_key, subscription_info))
     }
@@ -181,12 +180,10 @@ impl<'a> VapidSignatureBuilder<'a> {
     /// allowing the reuse of one builder for multiple messages by cloning the resulting builder.
     pub fn from_base64_no_sub(
         encoded: &str,
-        config: base64::Config,
+        config: base64::engine::GeneralPurpose,
     ) -> Result<PartialVapidSignatureBuilder, WebPushError> {
-        let pr_key = ES256KeyPair::from_bytes(
-            &base64::decode_config(encoded, config).map_err(|_| WebPushError::InvalidCryptoKeys)?,
-        )
-        .map_err(|_| WebPushError::InvalidCryptoKeys)?;
+        let pr_key = ES256KeyPair::from_bytes(&config.decode(encoded).map_err(|_| WebPushError::InvalidCryptoKeys)?)
+            .map_err(|_| WebPushError::InvalidCryptoKeys)?;
 
         Ok(PartialVapidSignatureBuilder {
             key: VapidKey::new(pr_key),

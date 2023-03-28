@@ -1,3 +1,5 @@
+use base64::engine::general_purpose::URL_SAFE;
+use base64::Engine;
 use http::uri::Uri;
 
 use crate::error::WebPushError;
@@ -122,8 +124,8 @@ impl<'a> WebPushMessageBuilder<'a> {
         let endpoint: Uri = self.subscription_info.endpoint.parse()?;
 
         if let Some(payload) = self.payload {
-            let p256dh = base64::decode_config(&self.subscription_info.keys.p256dh, base64::URL_SAFE)?;
-            let auth = base64::decode_config(&self.subscription_info.keys.auth, base64::URL_SAFE)?;
+            let p256dh = URL_SAFE.decode(&self.subscription_info.keys.p256dh)?;
+            let auth = URL_SAFE.decode(&self.subscription_info.keys.auth)?;
 
             let http_ece = HttpEce::new(payload.encoding, &p256dh, &auth, self.vapid_signature);
 

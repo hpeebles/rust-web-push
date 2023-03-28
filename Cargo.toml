@@ -29,7 +29,7 @@ jwt-simple = "0.11.2"
 ece = "^2.1"
 pem = "1.1.0"
 sec1_decode = "^0.1.0"
-base64 = "^0.13"
+base64 = "^0.21"
 chrono = "^0.4"
 log = "^0.4"
 
